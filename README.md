@@ -1,4 +1,4 @@
-# Emulating and calibrating a nuclear breakup reaction
+# Emulating and calibrating a nuclear breakup reaction using surmise and bfrescox
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/beykyle/breakup_calibration/blob/main/breakup_demo/breakup_calibration_demo.ipynb)
 
