@@ -1,0 +1,10 @@
+# local environment and the bfrescox source clone (see setup_venv.sh)
+.venv/
+Bfrescox/
+
+# jupyter / python noise
+.ipynb_checkpoints/
+__pycache__/
+
+# per-design-point CDCC outputs, if the campaign is re-run
+model/samples/

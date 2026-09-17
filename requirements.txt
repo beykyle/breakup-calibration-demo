@@ -1,0 +1,26 @@
+# Everything the demo notebook needs from PyPI.  Nothing here requires MPI or
+# a cluster -- the expensive CDCC campaign has already been run and its
+# outputs ship in data/.
+#
+# The one non-PyPI dependency is bfrescox (the Python wrapper around the
+# Frescox reaction code), which the notebook's ANC section uses for ~1500
+# cheap two-body bound-state calculations.  install_deps.sh clones it into
+# ./Bfrescox and pip-installs it from there; that compiles Frescox and
+# needs gfortran.  pandas and f90nml are its runtime dependencies.
+#
+# Lower bounds are the versions this was developed and tested against
+# (Python 3.12).  surmise is pinned exactly: 0.4.0 is the release the
+# notebook's numbers were produced with, and its GP fitting details have
+# changed on the development branch since.
+
+numpy>=2.0,<3
+scipy>=1.14,<2
+matplotlib>=3.9
+corner>=2.2
+surmise==0.4.0
+pandas>=2.0
+f90nml>=1.4
+
+# to run the notebook itself
+jupyterlab>=4.0
+ipykernel>=6.0
