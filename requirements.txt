@@ -4,7 +4,7 @@
 #
 # The one non-PyPI dependency is bfrescox (the Python wrapper around the
 # Frescox reaction code), which the notebook's ANC section uses for ~1500
-# cheap two-body bound-state calculations.  install_deps.sh clones it into
+# cheap two-body bound-state calculations.  setup.sh clones it into
 # ./Bfrescox and pip-installs it from there; that compiles Frescox and
 # needs gfortran.  pandas and f90nml are its runtime dependencies.
 #

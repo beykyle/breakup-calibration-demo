@@ -11,11 +11,16 @@ reproduce [Sürer, Nunes, Plumlee & Wild, *Phys. Rev. C* **106**, 024607 (2022)]
 ## Quick start
 
 ```bash
-git clone https://github.com/bandframework/Bfrescox.git   # into this directory; setup_venv.sh
-./setup_venv.sh                                            # does it for you if it is missing
+git clone https://github.com/beykyle/breakup-calibration-demo.git
+cd breakup-calibration-demo
+./setup.sh                 # .venv + dependencies + bfrescox (clones and builds it)
 source .venv/bin/activate
 jupyter lab breakup_calibration_demo.ipynb
 ```
+
+`./setup.sh --no-venv` installs into the active Python instead of creating `.venv`; that is
+what the notebook's first cell uses on Colab. Building bfrescox compiles Frescox, so it needs
+`gfortran` and `git` on PATH and takes a few minutes the first time.
 
 ## Regenerating the training data
 

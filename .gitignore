@@ -1,4 +1,4 @@
-# local environment and the bfrescox source clone (see setup_venv.sh)
+# local environment and the bfrescox source clone (see setup.sh)
 .venv/
 Bfrescox/
 
