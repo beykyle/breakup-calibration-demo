@@ -1,6 +1,7 @@
 # Emulating and calibrating a nuclear breakup reaction
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/beykyle/breakup_calibration/blob/main/breakup_demo/breakup_calibration_demo.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/https://github.com/beykyle/breakup-calibration-demo/blob/main/breakup_calibration_demo.ipynb)
+    
 
 This is a use case of the BAND software framework, using
 [surmise](https://github.com/bandframework/surmise) for emulation and calibration and
