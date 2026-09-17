@@ -6,7 +6,7 @@
 This is a use case of the BAND software framework, using
 [surmise](https://github.com/bandframework/surmise) for emulation and calibration and
 [Bfrescox](https://github.com/bandframework/Bfrescox) to drive the Frescox reaction code to 
-reproduce Sürer, Nunes, Plumlee & Wild, *Phys. Rev. C* **106**, 024607 (2022).
+reproduce [Sürer, Nunes, Plumlee & Wild, *Phys. Rev. C* **106**, 024607 (2022)](https://journals.aps.org/prc/abstract/10.1103/PhysRevC.106.024607).
 
 ## Quick start
 
