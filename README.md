@@ -65,36 +65,6 @@ requirements-model.txt           extra dependencies for model/run_design_point.p
 Bfrescox/                        clone of github.com/bandframework/Bfrescox (made by setup_venv.sh)
 ```
 
-## The ANC section
-
-Section 8 of the notebook runs frescox itself, in three calls that are all visible in the
-notebook: `bfrescox.Configuration.from_template` fills the seven `@placeholders@` of
-`model/anc.template` (the 7Be+p Coulomb radius, central and spin-orbit Woods-Saxon terms,
-built inline from the four parameters); `bfrescox.run_simulation` runs it in a temporary
-directory; `np.loadtxt` reads `fort.46`, whose rows are `R, u(R)/W(R), u(R), W(R)` -- the
-ratio of the bound wave function to the Whittaker function, constant at large `R`, is the
-ANC. At the truth parameters the notebook prints 0.7008 fm^-1/2, the Capel & Nunes value. A
-thread pool runs the ~1500 samples in parallel, since each frescox call is its own process.
-
-`anc.template` is the CDCC input with the continuum stripped out: one partition state, one
-bound `&Overlap` with `isc=1`, no couplings. The target potentials, which never enter the
-two-body bound state, are literal numbers; `model/generate_anc_template.py` rebuilds the file
-from the `&Pot` block of `cdcc_angular.template` and `run_design_point.FIXED` (or a JSON
-file of the same layout via `--fixed`), keeping the 7Be+p entries as placeholders.
-
-## The problem
-
-$^8$B is a proton halo nucleus — a proton bound to a $^7$Be core by only 137 keV. Fired at
-a $^{208}$Pb target at 80 MeV/nucleon it breaks up, and the cross sections depend on four
-parameters of the $^7$Be–$p$ interaction: a Coulomb radius, a Woods-Saxon radius and
-diffuseness, and a spin-orbit depth. The task is to infer them from the breakup data.
-
-A single CDCC evaluation costs about **65 core-hours**, and MCMC needs $10^5$ of them. So a
-500-point design was computed once (~32,500 core-hours on an HPC cluster), a Gaussian
-process was fitted to it, and the MCMC runs against the GP.
-
-The "data" are the simulator at known parameter values plus 10% noise, so the posterior can
-be checked against a right answer.
 
 ## Regenerating the training data
 
@@ -120,19 +90,3 @@ Two things that will bite if you build bfrescoxpro yourself:
 - frescox writes its scratch files to `<TMP>fort.<rank>.<unit>` with `TMP='/tmp/'` by
   default, so two jobs sharing a node collide. The shipped templates set `tmp='./'` so the
   files land in each run's own directory.
-
-## Notes on the method
-
-- The emulator is fitted to **log** of the cross sections. They are strictly positive and
-  strongly right-skewed, and in linear space surmise's `PCGPwM` produced negative predicted
-  cross sections in 5 of 10 fits (measured over 10 seeds, 5 methods, both spaces). In log
-  space that cannot happen, and accuracy at the truth parameters improved 2–3×. The cost is
-  that the likelihood becomes multiplicative rather than the paper's additive Gaussian —
-  defensible for errors quoted as 10% *relative*, but a deviation, and stated as such in
-  the notebook.
-- surmise 0.4.0 estimates GP hyperparameters from a **random subsample** of the design,
-  drawn from global numpy state, so fits are not reproducible unless it is seeded. The
-  notebook seeds it. (This affects only the hyperparameter estimate — the GP itself
-  conditions on the whole design.)
-- The notebook's caveats section lists the known discrepancies with the paper, including a
-  systematic bias in $a_{\rm WS}$ that is not resolved.
