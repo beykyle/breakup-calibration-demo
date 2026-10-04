@@ -45,17 +45,20 @@ if (( USE_VENV )); then
         echo "creating $VENV"
         $PYTHON -m venv "$VENV"
     fi
+    # Windows venvs put the activate script in Scripts/ instead of bin/.
+    VENV_BIN="$VENV/bin"
+    [[ -d "$VENV_BIN" ]] || VENV_BIN="$VENV/Scripts"
     # shellcheck disable=SC1091
-    source "$VENV/bin/activate"
+    source "$VENV_BIN/activate"
     PYTHON=python
     $PYTHON -m pip install --quiet --upgrade pip
 fi
 
-# surmise requires >= 3.10; 3.12 is what this was tested on.
+# surmise requires >= 3.11; 3.12 is what this was tested on.
 $PYTHON - <<'PY'
 import sys
-if sys.version_info < (3, 10):
-    sys.exit(f"need Python >= 3.10, found {sys.version.split()[0]}")
+if sys.version_info < (3, 11):
+    sys.exit(f"need Python >= 3.11, found {sys.version.split()[0]}")
 print(f"using Python {sys.version.split()[0]}")
 PY
 
@@ -109,6 +112,6 @@ install_bfrescox
 if (( USE_VENV )); then
     echo
     echo "done.  next:"
-    echo "    source $VENV/bin/activate"
+    echo "    source $VENV_BIN/activate"
     echo "    jupyter lab breakup_calibration_demo.ipynb"
 fi

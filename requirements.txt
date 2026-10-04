@@ -9,7 +9,7 @@
 # needs gfortran.  pandas and f90nml are its runtime dependencies.
 #
 # Lower bounds are the versions this was developed and tested against
-# (Python 3.12).  surmise is pinned exactly: 0.4.0 is the release the
+# (Python 3.12).  surmise is pinned exactly: 1.0.0 is the release the
 # notebook's numbers were produced with, and its GP fitting details have
 # changed on the development branch since.
 
@@ -17,7 +17,7 @@ numpy>=2.0,<3
 scipy>=1.14,<2
 matplotlib>=3.9
 corner>=2.2
-surmise==0.4.0
+surmise==1.0.0
 pandas>=2.0
 f90nml>=1.4
 
