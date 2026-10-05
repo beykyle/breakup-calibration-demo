@@ -92,70 +92,11 @@ install_bfrescox() {
         exit 1
     fi
 
-    # Bfrescox uses git symlinks, which a Windows checkout without symlink
-    # privileges (core.symlinks=false) writes out as small text files holding
-    # the target path.  Replace those with copies of what they point to.
-    git -C "$BFRESCOX_DIR" ls-files -s -- bfrescox_pypkg |
-        awk '$1 == "120000" { print $2, $4 }' |
-        $PYTHON -c '
-import hashlib, os, shutil, sys
-root = sys.argv[1]
-links = {}
-for line in sys.stdin:
-    blob, path = line.split(maxsplit=1)
-    links[os.path.normpath(os.path.join(root, path.strip()))] = blob
-def is_placeholder(p):
-    # Still the text file git wrote, i.e. not materialized on an earlier run.
-    if p not in links or os.path.islink(p) or not os.path.isfile(p):
-        return False
-    with open(p, "rb") as f:
-        data = f.read()
-    return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest() == links[p]
-def resolve(p):
-    while is_placeholder(p):
-        with open(p) as f:
-            p = os.path.normpath(os.path.join(os.path.dirname(p), f.read().strip()))
-    return p
-for link in sorted(links):
-    if not is_placeholder(link):
-        continue
-    target = resolve(link)
-    os.remove(link)
-    if os.path.isdir(target):
-        shutil.copytree(target, link)
-    else:
-        shutil.copy2(target, link)
-    print("materialized symlink", os.path.relpath(link, root))
-' "$BFRESCOX_DIR"
-
     # A regular (non-editable) install copies the package, including the frescox
     # binary it just built, into site-packages.  That is what lets an already
     # running kernel (Colab) import it without a restart.
     echo "installing bfrescox from $BFRESCOX_DIR/bfrescox_pypkg (compiles Frescox; a few minutes)"
     $PYTHON -m pip install --quiet "$BFRESCOX_DIR/bfrescox_pypkg"
-
-    # On Windows the build produces bin/frescox.exe, but bfrescox only packages
-    # and looks for bin/frescox.  Install the binary under both names: the bare
-    # one passes bfrescox's existence check and CreateProcess appends .exe when
-    # running it.  Also put the gfortran runtime DLLs beside it, since Windows
-    # searches the executable's directory first and the compiler's bin/ will
-    # not necessarily be on PATH when Jupyter runs it.
-    built_exe="$BFRESCOX_DIR/bfrescox_pypkg/src/bfrescox/bin/frescox.exe"
-    if [[ -f "$built_exe" ]]; then
-        $PYTHON - "$built_exe" "$(dirname "$(command -v gfortran)")" <<'PY'
-import importlib.util, os, shutil, sys
-exe, compiler_bin = sys.argv[1:]
-bin_dir = os.path.join(os.path.dirname(importlib.util.find_spec("bfrescox").origin), "bin")
-os.makedirs(bin_dir, exist_ok=True)
-for name in ("frescox", "frescox.exe"):
-    shutil.copy2(exe, os.path.join(bin_dir, name))
-for dll in ("libgfortran-5.dll", "libgcc_s_seh-1.dll", "libquadmath-0.dll", "libwinpthread-1.dll"):
-    src = os.path.join(compiler_bin, dll)
-    if os.path.isfile(src):
-        shutil.copy2(src, bin_dir)
-PY
-    fi
-
     $PYTHON - <<'PY'
 import importlib
 importlib.invalidate_caches()
